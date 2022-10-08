@@ -1,0 +1,29 @@
+{
+  "twitch": {
+    "client_id": "",
+    "client_secret": ""
+  },
+  "s3": {
+    "access_token": "",
+    "secret_key": "",
+    "region": "",
+    "bucket": ""
+  },
+  "redis": {
+    "username": "default",
+    "password": "password",
+    "database": 0,
+    "address": "localhost:6379"
+  },
+  "http": {
+    "public_addr": "http://domain:port.com",
+    "port": 8080,
+    "cookie": {
+      "domain": "domain",
+      "secure": false
+    },
+    "jwt": {
+      "secret": ""
+    }
+  }
+}
