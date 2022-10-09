@@ -51,3 +51,10 @@ Place in <i>config.json</i>.http.jwt.secret
 ```bash
 make run
 ```
+
+### Step 3.1 - Run with Docker
+
+```bash
+make docker
+docker run -p 8080:8080 --restart=unless-stopped -v $PWD/config.json:/app/config.json --name linnea --add-host=host.docker.internal:host-gateway -d joachimflottorp/linnea
+```
