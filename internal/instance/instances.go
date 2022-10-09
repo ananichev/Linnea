@@ -6,6 +6,6 @@ import (
 )
 
 type InstanceList struct {
-	Redis 	redis.Instance
+	Redis   redis.Instance
 	Storage s3.Instance
 }

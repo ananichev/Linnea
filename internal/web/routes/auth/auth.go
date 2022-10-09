@@ -21,7 +21,7 @@ func NewAuth(gCtx ctx.Context) router.Route {
 
 func (a *Route) Configure() router.RouteConfig {
 	return router.RouteConfig{
-		URI: "/auth",
+		URI:    "/auth",
 		Method: []string{http.MethodGet},
 		Children: []router.Route{
 			newCallback(a.Ctx),

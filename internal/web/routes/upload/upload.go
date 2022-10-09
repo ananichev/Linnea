@@ -26,8 +26,8 @@ func NewUpload(gCtx ctx.Context) router.Route {
 
 func (a *Route) Configure() router.RouteConfig {
 	return router.RouteConfig{
-		URI: "/upload",
-		Method: []string{http.MethodPost},
+		URI:      "/upload",
+		Method:   []string{http.MethodPost},
 		Children: []router.Route{},
 		Middleware: []mux.MiddlewareFunc{
 			middleware.Auth(a.Ctx),
@@ -45,11 +45,11 @@ func (a *Route) Handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	
+
 	user, err := redis.GetUser(r.Context(), a.Ctx.Inst().Redis, secret, auth)
 	if err != nil {
 		zap.S().Warnw("Failed to get user from redis", "error", err)
-		
+
 		router.JSON(w, http.StatusInternalServerError, router.ApiResult{
 			Success: false,
 			Data:    "Internal server error",
@@ -86,10 +86,10 @@ func (a *Route) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := a.Ctx.Inst().Storage.UploadFile(r.Context(), &s3manager.UploadInput{
-		Body: 			aws.ReadSeekCloser(file.Data),
-		Key: 			aws.String(file.Name),
-		ContentType: 	aws.String(file.ContentType),
-		CacheControl: 	aws.String("public, max-age=15552000"),
+		Body:         aws.ReadSeekCloser(file.Data),
+		Key:          aws.String(file.Name),
+		ContentType:  aws.String(file.ContentType),
+		CacheControl: aws.String("public, max-age=15552000"),
 	}); err != nil {
 		router.JSON(w, http.StatusInternalServerError, router.ApiResult{
 			Success: false,
@@ -104,8 +104,8 @@ func (a *Route) Handler(w http.ResponseWriter, r *http.Request) {
 
 	{
 		file := models.File{
-			OwnerID: user.TwitchUID,
-			Name: file.Name,
+			OwnerID:     user.TwitchUID,
+			Name:        file.Name,
 			ContentType: file.ContentType,
 		}
 

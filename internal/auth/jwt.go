@@ -11,7 +11,7 @@ var (
 )
 
 type JWTClaimUser struct {
-	ID 	 string    `json:"u"`
+	ID string `json:"u"`
 
 	jwt.RegisteredClaims
 }
@@ -32,7 +32,7 @@ func AuthenticateJWT(secret, token string, out jwt.Claims) (*jwt.Token, error) {
 	)
 
 	out = claims
-	
+
 	if err != nil {
 		return nil, err
 	}

@@ -26,7 +26,7 @@ func Create(ctx context.Context, options Options) (Instance, error) {
 	if err := rds.Ping(ctx).Err(); err != nil {
 		return nil, err
 	}
-	
+
 	inst := &redisInstance{
 		client: rds,
 	}
@@ -85,7 +85,7 @@ func GetUser(ctx context.Context, r Instance, secret, token string) (*models.Use
 	}
 
 	u := &models.User{}
-	
+
 	user, err := r.Get(ctx, fmt.Sprintf("user:%s", decryptedJwt.ID))
 	if err != nil {
 		return nil, err

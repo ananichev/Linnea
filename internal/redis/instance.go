@@ -28,7 +28,7 @@ type Instance interface {
 	Del(context.Context, string) error
 	// Expire sets the expiration of the key
 	Expire(context.Context, string, time.Duration) error
-	
+
 	// Prefix returns the prefix used for all keys
 	Prefix() string
 

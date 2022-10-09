@@ -22,20 +22,20 @@ import (
 )
 
 var (
-	cfg = flag.String("config", "config.json", "Path to the config file")
+	cfg   = flag.String("config", "config.json", "Path to the config file")
 	debug = flag.Bool("debug", false, "Enable debug logging")
 )
 
 func init() {
 	flag.Parse()
-	
+
 	if *debug {
 		log.InitLogger(zap.NewDevelopmentConfig())
 	} else {
 		b := zap.NewProductionConfig()
 		b.Encoding = "console"
 		b.EncoderConfig = zap.NewDevelopmentEncoderConfig()
-		
+
 		log.InitLogger(b)
 	}
 
@@ -51,22 +51,22 @@ func main() {
 	defer func() {
 		err := cfgFile.Close()
 		assert.Error(err)
-	}();
+	}()
 
 	conf, err := json.DeserializeStruct[config.Config](cfgFile)
 	assert.Error(err, "Failed to deserialize config file")
 
 	doneSig := make(chan os.Signal, 1)
 	signal.Notify(doneSig, syscall.SIGINT, syscall.SIGTERM)
-	
+
 	gCtx, cancel := ctx.WithCancel(ctx.New(context.Background(), conf))
 
 	{
 		gCtx.Inst().Redis, err = redis.Create(gCtx, redis.Options{
-			Address: conf.Redis.Address,
+			Address:  conf.Redis.Address,
 			Username: conf.Redis.Username,
 			Password: conf.Redis.Password,
-			DB: conf.Redis.Database,
+			DB:       conf.Redis.Database,
 		})
 
 		assert.Error(err, "Failed to create redis instance")
@@ -74,10 +74,10 @@ func main() {
 
 	{
 		gCtx.Inst().Storage, err = s3.New(s3.Config{
-			Region: conf.S3.Region,
+			Region:      conf.S3.Region,
 			AccessToken: conf.S3.AccessToken,
-			SecretKey: conf.S3.SecretKey,
-			Bucket: conf.S3.Bucket,
+			SecretKey:   conf.S3.SecretKey,
+			Bucket:      conf.S3.Bucket,
 		})
 
 		if err != nil {
@@ -120,7 +120,7 @@ func main() {
 	}()
 
 	zap.S().Info("Ready!")
-	
+
 	<-done
 
 	os.Exit(0)

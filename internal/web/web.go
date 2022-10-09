@@ -28,10 +28,10 @@ func (log *l) Write(p []byte) (int, error) {
 
 type Server struct {
 	listener net.Listener
-	router *mux.Router
+	router   *mux.Router
 }
 
-func New(gCtx ctx.Context, isDebug bool) error {	
+func New(gCtx ctx.Context, isDebug bool) error {
 	port := gCtx.Config().Http.Port
 	addr := fmt.Sprintf("%s:%d", "0.0.0.0", port)
 
@@ -43,12 +43,12 @@ func New(gCtx ctx.Context, isDebug bool) error {
 		return err
 	}
 
-	s.router = mux.NewRouter().StrictSlash(false)	
+	s.router = mux.NewRouter().StrictSlash(false)
 
 	logger := log.New(&l{zap.S()}, "", 0)
-	
+
 	server := http.Server{
-		Handler: s.router,
+		Handler:  s.router,
 		ErrorLog: logger,
 	}
 
@@ -84,7 +84,7 @@ func (s *Server) setupRoutes(r router.Route, parent *mux.Router) {
 	route.HandleFunc("/", r.Handler)
 
 	zap.S().
-		With("route", routeConfig.URI,).
+		With("route", routeConfig.URI).
 		Debug("Setup route")
 
 	for _, child := range routeConfig.Children {

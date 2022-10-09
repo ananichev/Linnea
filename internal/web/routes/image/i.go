@@ -24,9 +24,9 @@ func NewImage(gCtx ctx.Context) router.Route {
 
 func (a *Route) Configure() router.RouteConfig {
 	return router.RouteConfig{
-		URI: "/i/{id}",
-		Method: []string{http.MethodGet},
-		Children: []router.Route{},
+		URI:        "/i/{id}",
+		Method:     []string{http.MethodGet},
+		Children:   []router.Route{},
 		Middleware: []mux.MiddlewareFunc{},
 	}
 }
@@ -43,27 +43,29 @@ func (a *Route) Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	img := aws.NewWriteAtBuffer([]byte{})
-	
+
 	if err := a.Ctx.Inst().Storage.DownloadFile(r.Context(), img, &s3.GetObjectInput{
-		Key:   aws.String(id),
+		Key: aws.String(id),
 	}); err != nil {
 		switch err.Error() {
-		case s3.ErrCodeNoSuchKey: {
-			w.WriteHeader(http.StatusNotFound)
-			zap.S().Error(err)
-			return
-		}
-		default: {
-			w.WriteHeader(http.StatusInternalServerError)
-			zap.S().Errorw("Error downloading image", "error", err)
-			return
-		}
+		case s3.ErrCodeNoSuchKey:
+			{
+				w.WriteHeader(http.StatusNotFound)
+				zap.S().Error(err)
+				return
+			}
+		default:
+			{
+				w.WriteHeader(http.StatusInternalServerError)
+				zap.S().Errorw("Error downloading image", "error", err)
+				return
+			}
 		}
 	}
 
-	file 	:= models.File{}
-	key 	:= fmt.Sprintf("file:%s", id)
-	
+	file := models.File{}
+	key := fmt.Sprintf("file:%s", id)
+
 	fileSrc, err := a.Ctx.Inst().Redis.Get(r.Context(), key)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -87,8 +87,8 @@ func Read(file multipart.File, multiHeader *multipart.FileHeader, r *http.Reques
 		return nil, err
 	}
 
-	ext 	:= filepath.Ext(multiHeader.Filename)
-	t 		:= mime.TypeByExtension(ext)
+	ext := filepath.Ext(multiHeader.Filename)
+	t := mime.TypeByExtension(ext)
 	if t == "" {
 		t = http.DetectContentType(fileHeader)
 	}
@@ -98,7 +98,7 @@ func Read(file multipart.File, multiHeader *multipart.FileHeader, r *http.Reques
 			t = t2
 		}
 	}
-	
+
 	f := File{
 		Name:        GenerateName(),
 		Data:        bytes.NewBuffer(buf.Bytes()),
