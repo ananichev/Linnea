@@ -31,7 +31,7 @@ type Server struct {
 	router *mux.Router
 }
 
-func New(gCtx ctx.Context) error {	
+func New(gCtx ctx.Context, isDebug bool) error {	
 	port := gCtx.Config().Http.Port
 	addr := fmt.Sprintf("%s:%d", "localhost", port)
 
@@ -56,6 +56,10 @@ func New(gCtx ctx.Context) error {
 	s.setupRoutes(upload.NewUpload(gCtx), s.router)
 	s.setupRoutes(auth.NewAuth(gCtx), s.router)
 	s.setupRoutes(image.NewImage(gCtx), s.router)
+
+	if isDebug {
+		s.router.Use(loggerMiddleware())
+	}
 
 	go func() {
 		<-gCtx.Done()
@@ -89,5 +93,18 @@ func (s *Server) setupRoutes(r router.Route, parent *mux.Router) {
 
 	for _, middleware := range routeConfig.Middleware {
 		route.Use(middleware)
+	}
+}
+
+func loggerMiddleware() mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			zap.S().
+				With("method", r.Method).
+				With("uri", r.RequestURI).
+				Debug("Request")
+
+			next.ServeHTTP(w, r)
+		})
 	}
 }

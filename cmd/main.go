@@ -32,15 +32,17 @@ func init() {
 	if *debug {
 		log.InitLogger(zap.NewDevelopmentConfig())
 	} else {
-		log.InitLogger(log.DefaultConfig)
+		b := zap.NewProductionConfig()
+		b.Encoding = "console"
+		b.EncoderConfig = zap.NewDevelopmentEncoderConfig()
+		
+		log.InitLogger(b)
 	}
 
 	if cfg == nil {
 		zap.S().Fatal("Config file is not set")
 	}
 }
-
-
 
 func main() {
 	cfgFile, err := os.OpenFile(*cfg, os.O_RDONLY, 0)
@@ -112,7 +114,7 @@ func main() {
 	go func() {
 		defer wg.Done()
 
-		if err := web.New(gCtx); err != nil && err != http.ErrServerClosed {
+		if err := web.New(gCtx, *debug); err != nil && err != http.ErrServerClosed {
 			zap.S().Fatalw("Failed to start web server", "error", err)
 		}
 	}()
