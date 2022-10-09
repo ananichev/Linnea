@@ -34,7 +34,9 @@ Twitch is used for authenticating users, as it's easier to leech of their authen
 Create a Twitch application [here](https://dev.twitch.tv/console/apps/create)
 And set <i>OAuth Redirect URLs</i> to <i>https://YOUR_URL/auth/callback</i>
 
-Set the category to <i>Website Integration</i> and copy over the <i>Client ID</i> and <i>Client Secret</i> to the <i>config.json</i> file.
+Make sure that YOUR_URL matches http.public_addr in <b>config.json</b>
+
+Set the category to <i>Website Integration</i> and copy over the <i>Client ID</i> and <i>Client Secret</i> to the <b>config.json</b> file.
 
 ### Step 2.2 - Generate JWT Secret
 
